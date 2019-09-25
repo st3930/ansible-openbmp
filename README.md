@@ -39,6 +39,7 @@ docker install operation are easy setup by ansible and docker-compose
 
 ### Ansible install
 ```
+$ sudo yum install epel-release
 $ sudo yum install sshpass gcc python-devel python-crypto libffi-devel openssl-devel git python2-pip
 $ sudo pip install --upgrade pip
 $ sudo pip install ansible --version
