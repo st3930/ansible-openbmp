@@ -1,0 +1,33 @@
+---
+# ./roles/common/tasks/certificate.yml
+- name: pip install based
+  pip:
+    name: "pip"
+    extra_args: "--upgrade"
+
+- name: pip install pyOpenSSL modules
+  pip:
+    name: "pyOpenSSL"
+
+- name: Generate an OpenSSL private key with the default values
+  openssl_privatekey:
+    path: "{{ cert_path|default('/etc/ssl') }}/{{ inventory_hostname }}.key"
+
+- name: Generate an OpenSSL Certificate Signing Request
+  openssl_csr:
+    path: "{{ cert_path|default('/etc/ssl') }}/{{ inventory_hostname }}.csr"
+    privatekey_path: "{{ cert_path|default('/etc/ssl') }}/{{ inventory_hostname}}.key"
+    common_name: "{{ cert_path|default('/etc/ssl') }}{{ inventory_hostname }}.local"
+    digest: sha256
+    country_name: JP
+
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{ cert_path|default('/etc/ssl') }}/{{ inventory_hostname }}.crt"
+    privatekey_path: "{{ cert_path|default('/etc/ssl') }}/{{ inventory_hostname}}.key"
+    csr_path: "{{ cert_path|default('/etc/ssl') }}/{{ inventory_hostname }}.csr"
+    provider: selfsigned
+    valid_in: "315360000"
+
+# changelog
+## 2019-09-25 initial by st3930

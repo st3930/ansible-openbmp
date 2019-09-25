@@ -1,0 +1,9 @@
+---
+# ./roles/app/tasks/app_pip.yml
+
+- name: Pip install modules
+  pip:
+    name: "{{ pip.apps }}"
+
+# changelog
+# 2019-09-06 initial by st3930

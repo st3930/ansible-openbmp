@@ -1,0 +1,29 @@
+---
+# ./install_openbmp.yml
+
+- hosts: all
+  become: yes
+  tasks:
+
+    - name: Generate an OpenSSL Certificate
+      tags: [ docker_crt ]
+      import_role:
+        name: common
+        tasks_from: certificate
+
+    - name: Docker deploy nginx_proxy
+      tags: [ nginx_proxy ]
+      import_role:
+        name: docker
+        tasks_from: install_nginx_proxy
+        vars_from: nginx_proxy
+
+    - name: Docker deploy apps
+      tags: [ docker_openbmp ]
+      import_role:
+        name: docker
+        tasks_from: install_openbmp
+        vars_from: openbmp
+
+# changelog
+# 2019-09-25 initial by st3930

@@ -1,0 +1,118 @@
+{# .roles/docker/templates/openbmp/docker-compose.j2                         #}
+version: '3'
+
+services:
+  openbmp_aio:
+    image: openbmp/aio:latest
+    container_name: {{openbmp_aio.container_name|default('openbmp_aio')}}
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - {{openbmp_aio.volmes|default('/var/openbmp_aio')}}/data/mysql:/data/mysql
+      - {{openbmp_aio.volmes|default('/var/openbmp_aio')}}/config:/config
+    environment:
+      KAFKA_FQDN: {{openbmp_aio.container_name|default('openbmp_aio')}}
+      MEM: {{openbmp_aio.env.mem|default(18)}}
+      REINIT_DB: {{openbmp_aio.env.reinit_db|default(1)}}
+      MYSQL_ROOT_PASSWORD: {{openbmp_aio.env.mysql_root_password|default('OpenBMP')}}
+      MYSQL_OPENBMP_PASSWORD: {{openbmp_aio.env.mysql_openbmp_password|default('openbmp')}}
+    networks:
+      - default
+      - common_link
+    ports:
+      - 5000:5000
+      - 8001:8001
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+  openbmp_ui:
+    image: openbmp/ui:latest
+    container_name: {{openbmp_ui.container_name|default('openbmp_ui')}}
+    restart: unless-stopped
+    privileged: true
+    depends_on:
+      - {{openbmp_aio.container_name|default('openbmp_aio')}}
+    environment:
+      VIRTUAL_HOST: {{openbmp_ui.env.virtual_host|default('openbmp_ui.local')}}
+      VIRTUAL_PORT: 8000
+      CERT_NAME: {{ inventory_hostname }}
+      HTTPS_METHOD: noredirect
+      OPENBMP_API_HOST: localhost
+      OPENBMP_API_PORT: 8001
+    networks:
+      - default
+      - common_link
+    expose:
+      - "8000"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+  openbmp_psql:
+    image: openbmp/postgres:latest
+    container_name: {{openbmp_psql.container_name|default('openbmp_psql')}}
+    restart: unless-stopped
+    depends_on:
+      - {{openbmp_aio.container_name|default('openbmp_aio')}}
+    volumes:
+      - {{openbmp_psql.volmes|default('/var/openbmp_psql')}}/config:/config
+      - {{openbmp_psql.volmes|default('/var/openbmp_psql')}}/postgres/main:/data/main
+      - {{openbmp_psql.volmes|default('/var/openbmp_psql')}}/postgres/ts:/data/ts
+    environment:
+      KAFKA_FQDN: {{openbmp_aio.container_name|default('openbmp_aio')}}
+      MEM: {{openbmp_psql.env.mem|default(48)}}
+      shm-size: 512m
+      ENABLE_RPKI: {{openbmp_psql.env.enable_rpki|default(1)}}
+      ENABLE_IRR: {{openbmp_psql.env.enable_irr|default(1)}}
+      PGUSER: {{openbmp_psql.env.pguser|default('openbmp')}}
+      PGPASSWORD: {{openbmp_psql.env.pgpassword|default('openbmp')}}
+      PGDATABASE: {{openbmp_psql.env.pgdatabase|default('openbmp')}}
+    networks:
+      - default
+      - common_link
+    ports:
+      - 172.17.0.1:5432:5432
+      - 172.17.0.1:9005:9005
+      - 8080:8080
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+  grafana:
+    image: grafana/grafana:latest
+    container_name: {{grafana.container_name|default('grafana')}}
+    restart: unless-stopped
+    privileged: true
+    depends_on:
+      - {{openbmp_psql.container_name|default('openbmp_psql')}}
+    volumes:
+      - {{grafana.volmes|default('/var/grafana')}}/etc/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - {{grafana.volmes|default('/var/grafana')}}/etc/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+    environment:
+      VIRTUAL_HOST: {{openbmp_grafana.env.virtual_host|default('grafana.local')}}
+      VIRTUAL_PORT: 3000
+      CERT_NAME: {{ inventory_hostname }}
+      HTTPS_METHOD: noredirect
+      DS_PSQL: {{openbmp_psql.container_name|default('openbmp_psql')}}
+      GF_SECURITY_ADMIN_PASSWORD: {{grafana.gf_security_admin_password|default("Snas123")}}
+      GF_INSTALL_PLUGINS: "digrich-bubblechart-panel,grafana-piechart-panel,briangann-datatable-panel,vonage-status-panel"
+    networks:
+      - default
+      - common_link
+    expose:
+      - 3000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+networks:
+  common_link:
+    external: true
+
+{# changelog                                                                 #}
+{# 2019-09-09 initial by st3930                                              #}

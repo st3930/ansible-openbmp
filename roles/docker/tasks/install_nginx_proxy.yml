@@ -1,0 +1,16 @@
+---
+# .roles/docker/tasks/install_nginx_proxy.yml
+
+- debug: msg="container deploy for {{ container_name }} start"
+
+- import_tasks: docker_mkdir.yml
+  tags: [ docker_mkdir ]
+- import_tasks: docker_network.yml
+  tags: [ docker_network ]
+- import_tasks: docker_compose.yml
+  tags: [ docker_compose ]
+- import_tasks: docker_up.yml
+  tags: [ docker_up ]
+
+# changelog
+# 2019-09-09 initial by st3930

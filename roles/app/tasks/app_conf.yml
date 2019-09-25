@@ -1,0 +1,16 @@
+---
+# ./roles/app/tasks/app_conf.yml
+
+- name: Daemon conf file setting
+  template:
+    src: "{{ item.template }}"
+    dest: "{{ item.dstfile }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+    backup: yes
+  register: register_conf
+  with_items: "{{ conf | default([]) }}"
+
+  # changelog
+  # 2019-09-09 initial by st3930

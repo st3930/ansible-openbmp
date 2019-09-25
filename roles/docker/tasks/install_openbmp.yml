@@ -1,0 +1,46 @@
+---
+# .roles/docker/tasks/install_openbmp.yml
+
+- debug: msg="container deploy for {{ container_name }} start"
+
+- name: mkdir grafana_dir
+  tags: [ grafana_dir ]
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+      - "{{grafana.volumes|default('/var/grafana')}}/provisioning/dashboards"
+      - "{{grafana.volumes|default('/var/grafana')}}/provisioning/datasources"
+
+- name: git clone grafana dashboards
+  tags: [ git_clone_grafana_dashboards ]
+  git:
+    repo: https://github.com/OpenBMP/obmp-grafana.git
+    dest: "{{grafana.volumes|default('/var/grafana')}}/provisioning/dashboards"
+
+- name: grafana provisioning config
+  tags: [ grafana_provisioning_config]
+  template:
+    src: "{{item.template}}"
+    dest: "{{item.dstfile}}"
+    backup: yes
+  with_items:
+    - template: openbmp/grafana/provisioning/dashboards/conf.yml.j2
+      dstfile: "{{grafana.volumes|default('/var/grafana')}}/provisioning/dashboards/conf.yml"
+    - template: openbmp/grafana/provisioning/datasources/conf.yml.j2
+      dstfile: "{{grafana.volumes|default('/var/grafana')}}/provisioning/datasources/conf.yml"
+
+- import_tasks: docker_mkdir.yml
+  tags: [ docker_mkdir ]
+- import_tasks: docker_network.yml
+  tags: [ docker_network ]
+- import_tasks: docker_compose.yml
+  tags: [ docker_compose ]
+- import_tasks: docker_up.yml
+  tags: [ docker_up ]
+
+# changelog
+# 2019-09-12 initial by st3930

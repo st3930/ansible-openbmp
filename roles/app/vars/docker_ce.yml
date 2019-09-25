@@ -1,0 +1,25 @@
+---
+# ./roles/app/vars/docker_ce.yml
+
+yum:
+  apps:
+    - lvm2
+    - device-mapper-persistent-data
+    - docker-ce
+  repository: "docker-ce-stable"
+pip:
+  apps:
+    - docker-py
+geturl:
+  - url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version|default('1.23.1') }}/docker-compose-{{ansible_system}}-{{ansible_architecture}}"
+    dstfile: "/usr/bin/docker-compose"
+    owner: "root"
+    group: "root"
+    mode: "+x"
+daemon:
+  - service: docker
+    state_install: started
+    state_reconf: restarted
+
+# changelog
+# 2019-09-06 initial by st3930

@@ -1,0 +1,13 @@
+---
+# .roles/docker/tasks/docker_mkdir.yml
+
+- name: Docker mkdir
+  file:
+    path: "{{ conf_dir|default('/etc/docker-compose.d')}}/{{ container_name }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+# changelog
+# 2019-09-09 initial by st3930

@@ -1,0 +1,20 @@
+---
+# ./roles/app/tasks/app_daemon.yml
+
+- name: Service start
+  service:
+    name: "{{ item.service }}"
+    state: "{{ item.state_install }}"
+    enabled: "{{ item.enabled|default('yes') }}"
+  with_items: "{{ daemon | default([]) }}"
+
+- name: Service reload
+  when: register_conf.changed == true
+  service:
+    name: "{{ item.service }}"
+    state: "{{ item.state_reconf }}"
+    enabled: "{{ item.enabled|default('yes') }}"
+  with_items: "{{ daemon | default([]) }}"
+
+  # changelog
+  # 2019-09-09 initial by st3930

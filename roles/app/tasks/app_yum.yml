@@ -1,0 +1,11 @@
+---
+# ./roles/app/tasks/app_yum.yml
+
+- name: Yum apps install
+  yum:
+    name: "{{ yum.apps }}"
+    state: installed
+    enablerepo: "{{ yum.repository|default('') }}"
+
+# changelog
+# 2019-09-06 initial by st3930

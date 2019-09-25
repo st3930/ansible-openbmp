@@ -1,0 +1,8 @@
+---
+# .roles/docker/tasks/docker_up.yml
+
+- name: Docker up by docker-compose
+  shell: docker-compose --file {{ conf_dir|default('/etc/docker-compose.d')}}/{{ container_name }}/docker-compose.yml up -d
+
+  # changelog
+  # 2019-09-09 initial by st3930

@@ -1,0 +1,21 @@
+---
+# ./install_docker_ce.yml
+
+- hosts: all
+  become: yes
+  tasks:
+    - name: dockerce repository install setup
+      tags: [ docker_ce_repo ]
+      import_role:
+        name: common
+        tasks_from: yum_repo_docker_ce
+
+    - name: docker_ce install
+      tags: [ docker_ce ]
+      import_role:
+        name: app
+        tasks_from: install_docker_ce
+        vars_from: docker_ce
+
+# changelog
+# 2019-09-06 initial by st3930

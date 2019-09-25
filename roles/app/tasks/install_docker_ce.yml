@@ -1,0 +1,21 @@
+---
+# ./roles/app/tasks/install_docker_ce.yml
+
+- import_tasks: app_yum.yml
+  tags: [ app_yum ]
+- import_tasks: app_pip.yml
+  tags: [ app_pip ]
+- include_tasks: app_geturl.yml
+  tags: [ app_geturl ]
+  with_items: "{{ geturl | default([]) }}"
+- import_tasks: app_conf.yml
+  tags: [ app_conf ]
+- import_tasks: app_daemon.yml
+  tags: [ app_daemon ]
+
+# find . -type f -name "*.yaml" -print0 | xargs -0 sed -i -e"s/\${DS_PSQL}/openbmp_psql/"
+
+# find . -type f -name "*.json" -print0 | sudo xargs -0 sed -i -e s/utc/browser/
+
+  # changelog
+  # 2019-09-09 initial by st3930

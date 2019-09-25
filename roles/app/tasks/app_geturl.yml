@@ -1,0 +1,27 @@
+---
+# ./roles/app/tasks/app_geturl.yml
+
+- name: Download contents uri
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dstfile }}"
+    owner: "{{ item.owner|default('root') }}"
+    group: "{{ item.group|default('root') }}"
+    mode: "{{ item.mode|default(0644) }}"
+    use_proxy: "{{ item.proxy|default('no') }}"
+  register: get_url
+
+- name: Contents file unarchive
+  when: get_url.changed == true and item.unarchive_dir is defined
+  unarchive:
+    src: "{{ item.dstfile }}"
+    dest: "{{ item.unarchive_dir }}"
+    mode: 0775
+    remote_src: yes
+
+- name: Contents file command
+  when: get_url.changed == true and item.shell is defined
+  shell: "{{ item.shell }}"
+
+  # changelog
+  # 2019-09-09 initial by st3930

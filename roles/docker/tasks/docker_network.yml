@@ -1,0 +1,10 @@
+---
+# file: .roles/docker/tasks/docker_network.yml
+
+- name: Docker network create
+  docker_network:
+    name: "{{ item }}"
+  with_items: "{{ network|default([]) }}"
+
+# changelog
+# 2019-09-09 initial st3930

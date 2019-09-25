@@ -1,0 +1,17 @@
+{# .roles/docker/templates/openbmp/provisioning/dashboards/conf.yml.j2       #}
+---
+# {{grafana.volumes|default('/var/grafana')}}/provisioning/dashboards/conf.yml
+
+apiVersion: 1
+
+providers:
+ - name: {{openbmp_psql.container_name|default('openbmp_psql')}}
+   folder: ""
+   type: file
+   disableDeletion: true
+   editable: true
+   options:
+     path: {{grafana.volmes|default('/var/grafana')}}/provisioning/dashboards/obmp-grafana/dashboards/postgres/
+
+{# changelog                                                                 #}
+{# 2019-09-12 initial by st3930                                              #}

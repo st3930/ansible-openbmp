@@ -1,0 +1,29 @@
+{# .roles/docker/templates/nginx-proxy/docker-compose.j2                     #}
+version: '3'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /etc/ssl:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - default
+      - common_link
+    ports:
+      - 80:80
+      - 443:443
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+networks:
+  common_link:
+    external: true
+
+{# changelog                                                                 #}
+{# 2019-09-09 initial by st3930                                              #}
