@@ -1,5 +1,5 @@
 ---
-# .roles/docker/tasks/install_openbmp.yml
+# ./roles/docker/tasks/install_openbmp.yml
 
 - debug: msg="container deploy for {{ container_name }} start"
 
@@ -12,14 +12,7 @@
     group: root
     mode: 0755
   with_items:
-      - "{{grafana.volumes|default('/var/grafana')}}/provisioning/dashboards"
-      - "{{grafana.volumes|default('/var/grafana')}}/provisioning/datasources"
-
-- name: git clone grafana dashboards
-  tags: [ git_clone_grafana_dashboards ]
-  git:
-    repo: https://github.com/OpenBMP/obmp-grafana.git
-    dest: "{{grafana.volumes|default('/var/grafana')}}/provisioning/dashboards"
+      - "{{grafana.volumes|default('/var/grafana')}}/etc/grafana/provisioning/datasources"
 
 - name: grafana provisioning config
   tags: [ grafana_provisioning_config]
@@ -28,10 +21,8 @@
     dest: "{{item.dstfile}}"
     backup: yes
   with_items:
-    - template: openbmp/grafana/provisioning/dashboards/conf.yml.j2
-      dstfile: "{{grafana.volumes|default('/var/grafana')}}/provisioning/dashboards/conf.yml"
-    - template: openbmp/grafana/provisioning/datasources/conf.yml.j2
-      dstfile: "{{grafana.volumes|default('/var/grafana')}}/provisioning/datasources/conf.yml"
+    - template: openbmp/grafana/provisioning/datasources/openbmp.yml.j2
+      dstfile: "{{grafana.volumes|default('/var/grafana')}}/etc/grafana/provisioning/datasources/openbmp.yml"
 
 - import_tasks: docker_mkdir.yml
   tags: [ docker_mkdir ]
@@ -42,5 +33,42 @@
 - import_tasks: docker_up.yml
   tags: [ docker_up ]
 
+- name: git clone grafana dashboards
+  tags: [ git_clone_grafana_dashboards ]
+  git:
+    repo: https://github.com/OpenBMP/obmp-grafana.git
+    dest: "{{grafana.volumes|default('/var/grafana')}}/obmp-grafana"
+
+- name: grafana dashboards Arrange
+  tags: [ grafana_dashboards_arrange ]
+  replace:
+    path: "{{ item }}"
+    regexp: "\\${DS_PSQL}"
+    replace: "{{openbmp_psql.container_name|default('openbmp_psql')}}"
+    backup: yes
+  with_lines: find {{grafana.volumes|default('/var/grafana')}}/obmp-grafana/dashboards/postgres/*/*.json -type f
+
+- name: grafana wait for http
+  tags: [ grafana_wait_for_http ]
+  uri:
+    url: http://{{grafana.env.virtual_host|default('grafana.local')}}/login
+    status_code: 200
+  register: result_http
+  until: result_http.status == 200
+  retries: 24
+  delay: 5
+
+- name: grafana dashboards import
+  tags: [ grafana_dashboards_import ]
+  grafana_dashboard:
+    grafana_url: http://{{grafana.env.virtual_host|default('grafana.local')}}
+    grafana_user: "admin"
+    grafana_password: "{{grafana.gf_security_admin_password|default('Snas123')}}"
+    state: present
+    overwrite: yes
+    path: "{{ item }}"
+  with_lines: find {{grafana.volumes|default('/var/grafana')}}/obmp-grafana/dashboards/postgres/*/*.json -type f
+
 # changelog
 # 2019-09-12 initial by st3930
+# 2019-10-10 refactor code by st3930

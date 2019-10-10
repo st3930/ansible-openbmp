@@ -1,15 +1,15 @@
 ---
 # ./roles/docker/vars/openbmp.yml
 
-container_name: "openbmp"                        # Do not changed
-conf_dir: "/etc/docker-compose"        # Optional default => `/etc/docker-compose`
+container_name: "openbmp"              # Do not changed
+conf_dir: "/etc/docker-compose.d"      # Optional default => `/etc/docker-compose.d`
 network:
   - "common_link"                      # Do not changed
 openbmp_aio:
   container_name: "openbmp_aio"        # Optional default => `openbmp_aio`
   volumes: "/var/openbmp_aio"          # Optional default => `/var/openbmp_aio`
   env:
-    mem: 3                             # Optional default => 18G
+    mem: 3                             # Optional default => 3G, full route => 18G
     reinit_db: 1                       # Optional (1:yes) or (0:no) default => 1
 openbmp_ui:
   container_name: "openbmp_ui"         # Optional default => `openbmp_ui`
@@ -19,7 +19,7 @@ openbmp_psql:
   container_name: "openbmp_psql"       # Optional default => `openbmp_psql`
   volumes: "/var/openbmp_psql"         # Optional default => `/var/openbmp_psql`
   env:
-    mem: 4                             # Optional default => 48G
+    mem: 4                             # Optional default => 4G, full route  => 48G
     enable_rpki: 1                     # Optional (1:yes) or (0:no) default => 1
     enable_irr: 1                      # Optional (1:yes) or (0:no) default => 1
     pguser: "openbmp"                  # Optional default => openbmp
@@ -34,3 +34,4 @@ grafana:
 
 # changelog
 # 2019-09-06 initial by st3930
+# 2019-10-10 bugfix by st3930

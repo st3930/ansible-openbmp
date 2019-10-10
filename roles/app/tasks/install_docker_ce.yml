@@ -13,9 +13,5 @@
 - import_tasks: app_daemon.yml
   tags: [ app_daemon ]
 
-# find . -type f -name "*.yaml" -print0 | xargs -0 sed -i -e"s/\${DS_PSQL}/openbmp_psql/"
-
-# find . -type f -name "*.json" -print0 | sudo xargs -0 sed -i -e s/utc/browser/
-
-  # changelog
-  # 2019-09-09 initial by st3930
+# changelog
+# 2019-09-09 initial by st3930

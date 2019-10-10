@@ -1,6 +1,6 @@
-{# .roles/docker/templates/openbmp/provisioning/datasources/conf.yml.j2       #}
+{# ./roles/docker/templates/openbmp/grafana/provisioning/datasources/openbmp.yml.j2      #}
 ---
-# {{grafana.volumes|default('/var/grafana')}}/provisioning/datasources/conf.yml
+# {{grafana.volumes|default('/var/grafana')}}/provisioning/datasources/openbmp.yml
 
 apiVersion: 1
 
@@ -23,3 +23,4 @@ datasources:
 
 {# changelog                                                                 #}
 {# 2019-09-12 initial by st3930                                              #}
+{# 2019-10-10 rename file by st3930                                          #}

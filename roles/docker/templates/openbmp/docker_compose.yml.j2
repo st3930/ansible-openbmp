@@ -1,4 +1,4 @@
-{# .roles/docker/templates/openbmp/docker-compose.j2                         #}
+{# ./roles/docker/templates/openbmp/docker-compose.j2                        #}
 version: '3'
 
 services:
@@ -91,14 +91,13 @@ services:
       - {{openbmp_psql.container_name|default('openbmp_psql')}}
     volumes:
       - {{grafana.volmes|default('/var/grafana')}}/etc/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-      - {{grafana.volmes|default('/var/grafana')}}/etc/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+#      - {{grafana.volmes|default('/var/grafana')}}/etc/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
     environment:
-      VIRTUAL_HOST: {{openbmp_grafana.env.virtual_host|default('grafana.local')}}
+      VIRTUAL_HOST: {{grafana.env.virtual_host|default('grafana.local')}}
       VIRTUAL_PORT: 3000
       CERT_NAME: {{ inventory_hostname }}
       HTTPS_METHOD: noredirect
-      DS_PSQL: {{openbmp_psql.container_name|default('openbmp_psql')}}
-      GF_SECURITY_ADMIN_PASSWORD: {{grafana.gf_security_admin_password|default("Snas123")}}
+      GF_SECURITY_ADMIN_PASSWORD: {{grafana.gf_security_admin_password|default('Snas123')}}
       GF_INSTALL_PLUGINS: "digrich-bubblechart-panel,grafana-piechart-panel,briangann-datatable-panel,vonage-status-panel"
     networks:
       - default
@@ -116,3 +115,4 @@ networks:
 
 {# changelog                                                                 #}
 {# 2019-09-09 initial by st3930                                              #}
+{# 2019-10-10 refactor by st3930                                             #}

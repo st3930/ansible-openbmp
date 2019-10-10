@@ -1,5 +1,5 @@
 ---
-# .roles/docker/tasks/docker_compose.yml
+# ./roles/docker/tasks/docker_compose.yml
 
 - name: docker-compose create
   template:

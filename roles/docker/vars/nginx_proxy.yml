@@ -2,9 +2,10 @@
 # ./roles/docker/vars/nginx_proxy.yml
 
 container_name: "nginx-proxy"          # Do not changed
-conf_dir: "/etc/docker-compose"        # Optional default `/etc/docker-compose`
+conf_dir: "/etc/docker-compose.d"      # Optional default `/etc/docker-compose.d
 network:
   - "common_link"                      # Do not changed
 
 # changelog
 # 2019-09-06 initial by st3930
+# 2019-10-10 typo    by st3930
