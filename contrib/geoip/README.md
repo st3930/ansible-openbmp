@@ -13,11 +13,13 @@ pip install netaddr
 ```
 
 ## Confirmed version
-CentOS7.6
-Python2.7
+- CentOS7.6
+- Python2.7
 
 ## Command
+```
 python geoip2mysql.py [-c|--config ./config.yaml]
+```
 
 ## config
 
@@ -47,5 +49,5 @@ mysql:
 ```
 
 ## Comments
-maxmaind geplite2 is incorrect.
-when import mysql database, except incorrect words.
+- maxmaind geplite2 is incorrect.
+- when import mysql database, except incorrect words.
