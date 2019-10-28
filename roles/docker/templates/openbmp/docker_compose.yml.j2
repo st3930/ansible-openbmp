@@ -22,6 +22,7 @@ services:
     ports:
       - 5000:5000
       - 8001:8001
+      - 172.17.0.1:3306:3306
     logging:
       driver: "json-file"
       options:
@@ -116,3 +117,4 @@ networks:
 {# changelog                                                                 #}
 {# 2019-09-09 initial by st3930                                              #}
 {# 2019-10-10 refactor by st3930                                             #}
+{# 2019-10-28 mysql open connect by host by st3930                           #}
