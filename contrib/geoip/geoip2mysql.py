@@ -64,8 +64,8 @@ def main():
     tz_list = def_read_csv(2, csv_read_tz[0])
 
     """ create import geo_ip data """
-    ipv4_datas = def_create_datas(mmdb_read_city, tz_list, ipv4_prefix_list[0:10])
-    ipv6_datas = def_create_datas(mmdb_read_city, tz_list, ipv6_prefix_list[0:20])
+    ipv4_datas = def_create_datas(mmdb_read_city, tz_list, ipv4_prefix_list)
+    ipv6_datas = def_create_datas(mmdb_read_city, tz_list, ipv6_prefix_list)
 
     """ import mysql table geo_ip iniialize... """
     if conf_mysql['init'] == 'True':
