@@ -7,6 +7,10 @@ required complex operation,
 
 docker install operation are easy setup by ansible and docker-compose
 
+## Components
+
+![components](https://github.com/st3930/ansible-openbmp/blob/images/snas_docker_component.png)
+
 ## Requirements
 - does not work some script behind proxy
 - large resource usese, ex) internet full route<br>
@@ -97,4 +101,7 @@ password: "Snas123"
 - bmp router setup
 
 #### chnage log
-##### 2019-09-24 initial by st3930
+```
+2019-09-24 initial by st3930
+2019-10-28 images add by st3930
+```
