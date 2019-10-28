@@ -78,7 +78,7 @@ def main():
 def def_load_config(conf_file):
     try:
         with open(conf_file, 'r') as f:
-            config = yaml.load(f)
+            config = yaml.load(f, Loader=yaml.SafeLoader)
     except:
         print "Error... read file error %s" % yaml
         sys.exit(1)
