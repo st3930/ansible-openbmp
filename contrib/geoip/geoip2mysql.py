@@ -64,8 +64,12 @@ def main():
     tz_list = def_read_csv(2, csv_read_tz[0])
 
     """ create import geo_ip data """
-    ipv4_datas = def_create_datas(mmdb_read_city, tz_list, ipv4_prefix_list[0:10])
-    ipv6_datas = def_create_datas(mmdb_read_city, tz_list, ipv6_prefix_list[0:20])
+    print "Start!!, ipv4 create geo_ip data"
+    print "Please wait... a few minutes "
+    ipv4_datas = def_create_datas(mmdb_read_city, tz_list, ipv4_prefix_list)
+    print "Start!!, ipv6 create geo_ip data"
+    print "Please wait... a few minutes "
+    ipv6_datas = def_create_datas(mmdb_read_city, tz_list, ipv6_prefix_list)
 
     """ import mysql table geo_ip iniialize... """
     if conf_mysql['init'] == 'True':
@@ -78,7 +82,7 @@ def main():
 def def_load_config(conf_file):
     try:
         with open(conf_file, 'r') as f:
-            config = yaml.load(f)
+            config = yaml.load(f, Loader=yaml.SafeLoader)
     except:
         print "Error... read file error %s" % yaml
         sys.exit(1)
@@ -148,13 +152,21 @@ def def_read_csv(index, csvfile):
     return prefix_list
 
 def def_create_record(mmdb_geolite2, tz_list, ip):
-    ip_start = str(ip.network)
-    ip_end = str(ip.broadcast)
+
     addr_type = 'ipv' + str(ip.version)
     if addr_type == 'ipv4':
         addressfamily = 2
+        ip_start = str(ip.network)
+        cidr = int(str(ip).split('/')[-1])
+        if cidr == 32:
+            ip_end = ip_start
+        else:
+            ip_end = str(ip.network + (2 ** (32 - cidr)) - 1)
+
     elif addr_type == 'ipv6':
         addressfamily = 10
+        ip_start = str(ip.network)
+        ip_end = str(ip.broadcast)
 
     reader = geoip2.database.Reader(mmdb_geolite2, ['en'])
     record = reader.city(ip_start)
@@ -333,3 +345,7 @@ def def_import_mysql(conf_mysql, datas):
         conn.close()
 
 main()
+
+""" changelog
+2019-10-28 bugifx by st3930
+"""

@@ -8,6 +8,8 @@ maxmaid: https://geolite.maxmind.com/download/geoip/database/
 ```
 yum install MySQL-python
 pip install geoip2
+pip install pytz
+pip install netaddr
 ```
 
 ## Confirmed version
