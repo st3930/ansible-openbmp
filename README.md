@@ -92,7 +92,7 @@ password: "CiscoRA"
 http://grafana.local/    : grafana_ui<br>
 - defaults
 ```
-account: "openbmp"
+account: "admin"
 password: "Snas123"
 * password change after initial login.
 ```
@@ -104,4 +104,5 @@ password: "Snas123"
 ```
 2019-09-24 initial by st3930
 2019-10-28 images add by st3930
+2019-11-14 typo by st3930
 ```
